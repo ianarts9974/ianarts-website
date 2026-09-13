@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Ian Kimemia Art Studio</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Admin Stylesheet -->
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- AUTHENTICATION SCREEN (Shown when not logged in) -->
+  <div class="auth-wrapper" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-brand-mark">IK</div>
+        <h2>Ian Kimemia CMS</h2>
+        <p>Private Studio Administration Portal</p>
+      </div>
+
+      <form id="loginForm" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="loginUsername">Username or Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="loginUsername" placeholder="admin or ianarts20@gmail.com" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="••••••••••••" required autocomplete="current-password">
+            <button type="button" class="toggle-pwd-btn" id="toggleLoginPwd" title="Show/hide password"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="loginSubmitBtn">
+          <span class="btn-text">Sign In to Dashboard</span>
+          <span class="btn-spinner hidden"><i class="fas fa-spinner fa-spin"></i> Authenticating...</span>
+        </button>
+
+        <div class="auth-footer">
+          <a href="/" class="back-to-site-link"><i class="fas fa-arrow-left"></i> Return to Public Gallery</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN ADMIN DASHBOARD (Shown when authenticated) -->
+  <div class="dashboard-wrapper hidden" id="dashboardScreen">
+    
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <span class="brand-mark">IK</span>
+          <div class="brand-info">
+            <span class="brand-title">IAN KIMEMIA</span>
+            <span class="brand-subtitle">Studio CMS</span>
+          </div>
+        </div>
+        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#overview" class="nav-item active" data-tab="overview">
+          <i class="fas fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#artworks" class="nav-item" data-tab="artworks">
+          <i class="fas fa-palette"></i>
+          <span>Inventory</span>
+          <span class="sidebar-badge" id="sidebarArtworksCount">0</span>
+        </a>
+        <a href="#inquiries" class="nav-item" data-tab="inquiries">
+          <i class="fas fa-envelope-open-text"></i>
+          <span>Inquiries</span>
+          <span class="sidebar-badge badge-warning hidden" id="sidebarUnreadBadge">0</span>
+        </a>
+        <a href="#settings" class="nav-item" data-tab="settings">
+          <i class="fas fa-cog"></i>
+          <span>Account Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-user-card">
+          <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
+          <div class="user-details">
+            <span class="user-name" id="sidebarAdminName">Ian Kimemia</span>
+            <span class="user-role">Administrator</span>
+          </div>
+        </div>
+        <div class="sidebar-actions">
+          <a href="/" target="_blank" class="sidebar-btn-site" title="View Public Portfolio">
+            <i class="fas fa-external-link-alt"></i>
+            <span>View Site</span>
+          </a>
+          <button class="sidebar-btn-logout" id="logoutBtn" title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="admin-main">
+      <!-- Top Bar -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h2 class="page-title" id="pageTitle">Studio Dashboard</h2>
+        </div>
+
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" id="quickAddArtBtn">
+            <i class="fas fa-plus"></i>
+            <span>Add Artwork</span>
+          </button>
+          <a href="/" target="_blank" class="btn btn-outline btn-sm">
+            <i class="fas fa-eye"></i>
+            <span>View Gallery</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- TAB 1: OVERVIEW / KPIS -->
+      <section class="tab-content active" id="tab-overview">
+        <!-- KPI Cards Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon icon-art"><i class="fas fa-palette"></i></div>
+            <div class="kpi-data">
+              <span class="kpi-label">Total Artworks</span>
+              <h3 class="kpi-value" id="kpiTotalArtworks">0</h3>
+              <span class="kpi-subtext" id="kpiArtworksSubtext">Across Charcoal, Paints & Anime</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-available"><i class="fas fa-check-circle"></i></div>
+            <div class="kpi-data">
+              <span class="kpi-label">Available for Sale</span>
+              <h3 class="kpi-value" id="kpiAvailableArtworks">0</h3>
+              <span class="kpi-subtext" id="kpiAvailableSubtext">Ready to ship or collect</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-value"><i class="fas fa-coins"></i></div>
+            <div class="kpi-data">
+              <span class="kpi-label">Total Inventory Value</span>
+              <h3 class="kpi-value" id="kpiTotalValue">KES 0</h3>
+              <span class="kpi-subtext" id="kpiAvailableValue">Avail: KES 0</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon icon-inquiry"><i class="fas fa-envelope"></i></div>
+            <div class="kpi-data">
+              <span class="kpi-label">Client Inquiries</span>
+              <h3 class="kpi-value" id="kpiNewInquiries">0</h3>
+              <span class="kpi-subtext" id="kpiTotalInquiries">0 total messages</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Distribution & Studio Highlights -->
+        <div class="overview-grid">
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Artworks by Medium</h3>
+            </div>
+            <div class="category-breakdown-list">
+              <div class="breakdown-item">
+                <div class="breakdown-info">
+                  <span class="category-indicator cat-charcoal"></span>
+                  <strong>Charcoal & Graphite</strong>
+                </div>
+                <span class="breakdown-count" id="countCharcoalKpi">0</span>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-info">
+                  <span class="category-indicator cat-paints"></span>
+                  <strong>Paints (Acrylic & Oil)</strong>
+                </div>
+                <span class="breakdown-count" id="countPaintsKpi">0</span>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-info">
+                  <span class="category-indicator cat-animes"></span>
+                  <strong>Anime & Stylized Works</strong>
+                </div>
+                <span class="breakdown-count" id="countAnimesKpi">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Quick Actions</h3>
+            </div>
+            <div class="quick-actions-grid">
+              <button class="quick-action-btn" id="overviewAddArtBtn">
+                <i class="fas fa-file-upload"></i>
+                <span>Upload New Art Piece</span>
+              </button>
+              <button class="quick-action-btn" id="overviewViewInquiriesBtn">
+                <i class="fas fa-inbox"></i>
+                <span>Review Customer Inquiries</span>
+              </button>
+              <a href="https://wa.me/254742916132" target="_blank" class="quick-action-btn whatsapp-action">
+                <i class="fab fa-whatsapp"></i>
+                <span>Open Studio WhatsApp (+254 742916132)</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: INVENTORY MANAGEMENT (CRUD) -->
+      <section class="tab-content" id="tab-artworks">
+        <div class="table-toolbar">
+          <div class="toolbar-left">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="adminArtSearch" placeholder="Filter by title, medium, dimensions...">
+            </div>
+            <div class="filter-select">
+              <select id="adminArtCategoryFilter">
+                <option value="All">All Categories</option>
+                <option value="Charcoal">Charcoal</option>
+                <option value="Paints">Paints</option>
+                <option value="Animes">Animes</option>
+              </select>
+            </div>
+            <div class="filter-select">
+              <select id="adminArtStatusFilter">
+                <option value="">All Statuses</option>
+                <option value="Available">Available</option>
+                <option value="Reserved">Reserved</option>
+                <option value="Sold">Sold</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toolbar-right">
+            <button class="btn btn-primary" id="openAddModalBtn">
+              <i class="fas fa-plus"></i>
+              <span>Add New Artwork</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Artworks Table -->
+        <div class="data-table-card">
+          <div class="table-responsive">
+            <table class="data-table" id="artworksTable">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Image</th>
+                  <th>Title & Description</th>
+                  <th>Category</th>
+                  <th>Medium & Size</th>
+                  <th>Price (KES)</th>
+                  <th>Status</th>
+                  <th>Featured</th>
+                  <th style="width: 120px; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="artworksTableBody">
+                <!-- Populated dynamically via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CUSTOMER INQUIRIES MANAGEMENT -->
+      <section class="tab-content" id="tab-inquiries">
+        <div class="table-toolbar">
+          <div class="toolbar-left">
+            <div class="filter-select">
+              <select id="adminInquiryStatusFilter">
+                <option value="all">All Inquiries</option>
+                <option value="new">New / Unread</option>
+                <option value="read">Read</option>
+                <option value="replied">Replied</option>
+              </select>
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-outline btn-sm" id="refreshInquiriesBtn">
+              <i class="fas fa-sync-alt"></i>
+              <span>Refresh Messages</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="inquiries-list" id="inquiriesListContainer">
+          <!-- Inquiries cards rendered via admin.js -->
+        </div>
+      </section>
+
+      <!-- TAB 4: ACCOUNT SETTINGS -->
+      <section class="tab-content" id="tab-settings">
+        <div class="settings-grid">
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Admin Profile</h3>
+            </div>
+            <div class="settings-details">
+              <p><strong>Artist & Owner:</strong> Ian Kimemia</p>
+              <p><strong>Contact Email:</strong> ianarts20@gmail.com</p>
+              <p><strong>WhatsApp / Phone:</strong> +254 742916132</p>
+              <p><strong>Physical Studio:</strong> Kutus, Kirinyaga, Kenya</p>
+            </div>
+          </div>
+
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3>Update Admin Password</h3>
+            </div>
+            <form id="changePasswordForm" class="settings-form">
+              <div class="form-group">
+                <label for="currPassword">Current Password</label>
+                <input type="password" id="currPassword" required>
+              </div>
+              <div class="form-group">
+                <label for="newPassword">New Password (min 6 characters)</label>
+                <input type="password" id="newPassword" minlength="6" required>
+              </div>
+              <button type="submit" class="btn btn-primary" id="changePasswordBtn">Update Password</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ADD / EDIT ARTWORK MODAL -->
+  <div class="modal-backdrop" id="artworkFormModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 id="artworkModalTitle">Add New Artwork</h3>
+        <button class="modal-close" id="closeArtworkModal"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="artworkForm" class="modal-form" enctype="multipart/form-data">
+        <input type="hidden" id="artworkEditId" name="id">
+
+        <div class="form-grid-2">
+          <!-- Left Column: Details -->
+          <div class="form-col">
+            <div class="form-group">
+              <label for="artTitle">Artwork Title <span class="req">*</span></label>
+              <input type="text" id="artTitle" name="title" placeholder="e.g. Soul of the Matriarch" required>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="artCategory">Category Style <span class="req">*</span></label>
+                <select id="artCategory" name="category" required>
+                  <option value="Charcoal">Charcoal</option>
+                  <option value="Paints">Paints</option>
+                  <option value="Animes">Animes</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="artStatus">Sale Status <span class="req">*</span></label>
+                <select id="artStatus" name="status" required>
+                  <option value="Available">Available</option>
+                  <option value="Reserved">Reserved</option>
+                  <option value="Sold">Sold</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="artPrice">Price (in KES) <span class="req">*</span></label>
+                <input type="number" id="artPrice" name="price" placeholder="e.g. 38000" min="0" step="100" required>
+              </div>
+
+              <div class="form-group">
+                <label for="artDimensions">Dimensions</label>
+                <input type="text" id="artDimensions" name="dimensions" placeholder="e.g. 50 x 70 cm (A2)">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="artMedium">Medium & Materials</label>
+              <input type="text" id="artMedium" name="medium" placeholder="e.g. Compressed charcoal & graphite on Strathmore paper">
+            </div>
+
+            <div class="form-group">
+              <label for="artDescription">Artwork Description / Story</label>
+              <textarea id="artDescription" name="description" rows="4" placeholder="Describe the inspiration, materials, framing, and artistic background..."></textarea>
+            </div>
+
+            <div class="form-group-checkbox">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="artFeatured" name="is_featured" value="1">
+                <span class="checkmark"></span>
+                <span>Pin to <strong>Featured Spotlight</strong> on Homepage</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Right Column: Image Upload & Preview -->
+          <div class="form-col">
+            <label class="form-group-label">Artwork Image <span class="req">*</span></label>
+            
+            <!-- Dual Option: Upload or Image URL -->
+            <div class="image-source-tabs">
+              <button type="button" class="img-tab-btn active" id="tabUploadFile">Upload File</button>
+              <button type="button" class="img-tab-btn" id="tabImageUrl">Image URL</button>
+            </div>
+
+            <div class="image-input-section" id="sectionUploadFile">
+              <div class="file-dropzone" id="fileDropzone">
+                <i class="fas fa-cloud-upload-alt dropzone-icon"></i>
+                <p class="dropzone-text">Drag & drop image here or <span class="browse-link">browse</span></p>
+                <p class="dropzone-hint">PNG, JPG, WEBP up to 10MB</p>
+                <input type="file" id="artImageFile" name="image" accept="image/*" class="file-input-hidden">
+              </div>
+            </div>
+
+            <div class="image-input-section hidden" id="sectionImageUrl">
+              <div class="form-group">
+                <label for="artImageUrl">Direct Image Web Address (URL)</label>
+                <input type="url" id="artImageUrl" name="image_url" placeholder="https://images.unsplash.com/... or Cloudinary">
+              </div>
+            </div>
+
+            <!-- Live Image Preview Box -->
+            <div class="live-preview-box">
+              <span class="preview-label">Live Preview:</span>
+              <div class="preview-canvas" id="imagePreviewCanvas">
+                <div class="preview-placeholder" id="previewPlaceholder">
+                  <i class="fas fa-image"></i>
+                  <span>No image selected yet</span>
+                </div>
+                <img src="" alt="Artwork Preview" id="previewImg" class="preview-image hidden">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelArtworkModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveArtworkBtn">
+            <span class="btn-text">Save Artwork</span>
+            <span class="btn-spinner hidden"><i class="fas fa-spinner fa-spin"></i> Saving...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="deleteModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button class="modal-close" id="closeDeleteModal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove <strong id="deleteItemTitle">this artwork</strong> from your inventory?</p>
+        <p class="delete-warning"><i class="fas fa-exclamation-triangle"></i> This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelDeleteBtn">Keep Listing</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Delete Listing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div class="toast-container" id="adminToastContainer"></div>
+
+  <!-- Admin CMS Javascript -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>

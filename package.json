@@ -1,0 +1,31 @@
+{
+  "name": "ian-kimemia-art-portfolio",
+  "version": "1.0.0",
+  "description": "Art portfolio and e-commerce catalog for visual artist Ian Kimemia with dynamic catalog and admin CMS.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "seed": "node server/seed.js",
+    "test": "node server/test_api.js"
+  },
+  "keywords": [
+    "art-portfolio",
+    "ecommerce",
+    "charcoal",
+    "paints",
+    "anime",
+    "artist-cms",
+    "ian-kimemia"
+  ],
+  "author": "Ian Kimemia",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
